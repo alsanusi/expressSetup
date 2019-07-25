@@ -46,6 +46,29 @@ app.use(bodyParser.json())
 const flash = require('express-flash')
 app.use(flash())
 
+// Flash require Session
+// Express-Session
+const session = require('express-session');
+app.use(session({
+    cookie: {
+        maxAge: 6000
+    },
+    secret: 'weuw',
+    resave: false,
+    saveUninitialized: false
+}))
+
+// Method-Override
+var methodOverride = require('method-override')
+// Custom logic for overriding method
+app.use(methodOverride(function (req, res) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+        var method = req.body._method
+        delete req.body._method
+        return method
+    }
+}))
+
 // Localhost: 3003
 app.listen(3003, () => {
     console.log("Server Run at Port 3003: http://127.0.0.1:3003")
